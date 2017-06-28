@@ -18,8 +18,8 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="bin/org.mozilla.javascript_1.7.2.v201005080400.jar"/>
 	<classpathentry kind="lib" path="bin/jxl-2.6.12.jar"/>
-	<classpathentry kind="lib" path="bin/ojdbc6.jar"/>
 	<classpathentry kind="lib" path="bin/mail-1.4.7.jar"/>
 	<classpathentry kind="lib" path="bin/pentaho-reporting-engine-classic-extensions-scripting-6.1.0.1-196.jar"/>
+	<classpathentry kind="lib" path="bin/ojdbc-6.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
