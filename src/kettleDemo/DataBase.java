@@ -1,8 +1,11 @@
 package kettleDemo;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.pentaho.di.core.database.DatabaseMeta;
 
 public class DataBase {
 	private String name;
@@ -62,9 +65,9 @@ public class DataBase {
 		this.pass = pass;
 	}
     
-	public void getdatabase(String proName){
-		InputStream in = getClass().getResourceAsStream("/cfg.properties");
+	public  DataBase(String proName){
 		try {
+			InputStream in = new FileInputStream("./config/cfg.properties");
 			// FileInputStream方法当前目录下路径不可行
 			
 			/* * InputStream in = new BufferedInputStream(new FileInputStream(
@@ -73,15 +76,14 @@ public class DataBase {
 			 
 			Properties prop = new Properties();
 			prop.load(in);
-			this.setName(prop.getProperty(proName+"name").toString());
+			this.setName(proName);
 			this.setType(prop.getProperty(proName+"type").toString());
-			this.setAccess(prop.getProperty(proName+"access").toString());
+			this.setAccess("Native");
 			this.setHost(prop.getProperty(proName+"host").toString());
 			this.setDb(prop.getProperty(proName+"db").toString());
 			this.setPort(prop.getProperty(proName+"port").toString());
 			this.setUser(prop.getProperty(proName+"user").toString());
 			this.setPass(prop.getProperty(proName+"pass").toString());
-			
 			in.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -89,17 +91,44 @@ public class DataBase {
 	}
 	
 	public String getFilename(){
-		InputStream in = getClass().getResourceAsStream("/cfg.properties");
 		try{
+			InputStream in = new FileInputStream("./config/cfg.properties");
 			Properties prop = new Properties();
 			prop.load(in);
 			String path = prop.getProperty("filename").toString();
+			in.close();
 			return path;
 		}catch(IOException e){
 			e.printStackTrace();
 		}
 		return null;
 	}
+	
+	public String getAppcode(){
+		try{
+			InputStream in = new FileInputStream("./config/cfg.properties");
+			Properties prop = new Properties();
+			prop.load(in);
+			String appcode = prop.getProperty("appcode").toString();
+			in.close();
+			return appcode;
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
     
+	public DatabaseMeta getDatabase(){
+		System.out.println("type="+this.getType());
+		DatabaseMeta inputDataBase = new DatabaseMeta(this.getName(), 
+				this.getType(),
+				"Native", 
+				this.getHost(),
+				this.getDb(), 
+				this.getPort(), 
+				this.getUser(),
+				this.getPass());
+		return inputDataBase;
+	}
 
 }
