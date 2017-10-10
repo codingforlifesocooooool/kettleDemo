@@ -1,15 +1,11 @@
 package kettleDemo;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.pentaho.di.core.KettleEnvironment;
-import org.pentaho.di.core.database.Database;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
-import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.job.Job;
 import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.trans.Trans;
@@ -17,14 +13,10 @@ import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.StepMetaDataCombi;
 
 public class GetTrans {
-	private static Map<String,String> columnNames = new HashMap<String,String>();
-	static{
-		columnNames.put("USER_CODE","USER_CODE");
-		columnNames.put("ROLE_CODE","ROLE_CODE");
-	}
+	
 	public static void main(String[] args) throws KettleException {
-		DataBase fromdb = new DataBase("from");
-    	DataBase todb = new DataBase("to");
+		DataBase fromdb = new DataBase("input");
+    	DataBase todb = new DataBase("output");
 		runTrans(fromdb, todb);
 	}
 
@@ -38,35 +30,9 @@ public class GetTrans {
 		
 		DatabaseMeta inputDataBase = fromdb.getDatabase();
 		DatabaseMeta outputDataBase = todb.getDatabase();
-		//Database db = new Database(inputDataBase);
-		Database db = new Database(null, inputDataBase);
-		db.connect();
-		String sql = "select * from V_USER_ROLE_EXPORT where  rownum=1";
-		db.openQuery(sql);
-		RowMetaInterface  idxRowMeta  = db.getReturnRowMeta();
-		String[] columns = idxRowMeta.getFieldNames();
-		int length = columns.length;
-		boolean isCheckPass = true;
 		
-		String filename = "exportNotime.ktr";
+		String filename = "syn.ktr";
 		
-		if(length >= 3){
-			columnNames.put("LINK_INDATE","LINK_INDATE");
-			filename = "export.ktr";
-		}
-		if(length < 2){
-			System.out.println("缺少字段");
-			isCheckPass = false;
-		}else{
-			for(String str:idxRowMeta.getFieldNames()){
-				String s = columnNames.get(str);
-				if(s == null || s.trim().equals("")){
-					System.out.println(str+"不是正确字段");
-					isCheckPass = false;
-				}
-			}	
-		}
-		if(isCheckPass){
 			//得到需要加载的转换文件
 			String path = "./lib/"+filename;
 			System.out.println("当前文件所在路径："+new File(path).getAbsolutePath());
@@ -76,18 +42,14 @@ public class GetTrans {
 			// 替换输入输出数据库
 			for(int i = 0;i < tm.getDatabases().size();i++){
 				String tableName = tm.getDatabase(i).getName();
-				if(tableName.equals("from")){
+				if(tableName.equals("input")){
 					tm.getDatabase(i).replaceMeta(inputDataBase);
-				}else if(tableName.equals("to")){
+				}else if(tableName.equals("output")){
 					tm.getDatabase(i).replaceMeta(outputDataBase);
 				}
-			}
 			
 			//得到转换
 			Trans trans = new Trans(tm);
-			//设置命名参数
-			String appcode = fromdb.getAppcode();
-			trans.setVariable("APP_CODE", appcode);
 			//预执行，否走没法得到steps
 			trans.prepareExecution(null);
 			//没什么用吧。。。。。
