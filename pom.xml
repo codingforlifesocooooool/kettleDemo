@@ -1,57 +1,181 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>kettleDemo</groupId>
-  <artifactId>kettleDemo</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  	<properties>
-		  <kettle.version>6.1.0.1-295</kettle.version>
-	</properties>
-	 <dependencies>
-    	<dependency>  
-            <groupId>pentaho-kettle</groupId>  
-            <artifactId>kettle-core</artifactId>  
-            <version>6.1.0.4-225</version>   
-        </dependency>  
-         <dependency>  
-             <groupId>com.verhas </groupId>  
-             <artifactId>license3j </artifactId>  
-             <version>1.0.7 </version>  
-         </dependency>  
-        <dependency>  
-            <groupId>pentaho-kettle</groupId>  
-            <artifactId>kettle-dbdialog</artifactId>  
-            <version>6.1.0.4-225</version>   
-        </dependency>  
-        <dependency>  
-            <groupId>pentaho-kettle</groupId>  
-            <artifactId>kettle-engine</artifactId>  
-            <version>6.1.0.4-225</version>   
-        </dependency>  
-        <dependency>  
-            <groupId>pentaho</groupId>  
-            <artifactId>metastore</artifactId>  
-            <version>6.1.0.4-225</version>  
-        </dependency>  
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>koal.usap</groupId>
+    <artifactId>KoalSSO</artifactId>
+    <version>1.00</version>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.1.RELEASE</version>
+    </parent>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- <dependency>
+              <groupId>org.jasig.cas</groupId>
+              <artifactId>cas-server-core</artifactId>
+              <version>${cas.version}</version>
+          </dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.jasig.cas/cas-server-core -->
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-webapp</artifactId>
+            <version>4.2.7</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.jasig.cas/cas-server-support-rest-services -->
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-support-rest-services</artifactId>
+            <version>${cas.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-support-rest</artifactId>
+            <version>${cas.version}</version>
+        </dependency>
+        <!--saml-->
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-support-saml</artifactId>
+            <version>${cas.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-support-saml-mdui</artifactId>
+            <version>${cas.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.mchange/c3p0 -->
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.5.2</version>
+        </dependency>
+
+        <!--koal-->
+        <dependency>
+            <groupId>koal.framework</groupId>
+            <artifactId>koal_wfshare_wicket1.5</artifactId>
+            <version>1.5.3-SNAPSHOT</version>
+        </dependency>
+
+        <!--redis-->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>1.7.0.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.4.7</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+
     </dependencies>
-    <repositories>
-		<repository>
-    	<id>pentaho-releases</id>
-   		 <url>http://repository.pentaho.org/artifactory/repo/</url>
- 		 </repository>
-    </repositories>
-  <build>
-    <sourceDirectory>src</sourceDirectory>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  
-  
+    <properties>
+        <java.version>1.7</java.version>
+        <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+        <buildNumber>${maven.build.timestamp}</buildNumber>
+        <cas.version>4.2.7</cas.version>
+    </properties>
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Internal Releases</name>
+            <url>http://10.0.109.63:8081/nexus/content/repositories/releases
+            </url>
+        </repository>
+        <snapshotRepository>
+            <id>Snapshots</id>
+            <name>Internal Snapshots</name>
+            <url>http://10.0.109.63:8081/nexus/content/repositories/snapshots
+            </url>
+        </snapshotRepository>
+    </distributionManagement>
+    <build>
+        <resources>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>GBK</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
 </project>
