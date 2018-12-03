@@ -38,96 +38,73 @@ public class GetTrans {
 		
 		DatabaseMeta inputDataBase = fromdb.getDatabase();
 		DatabaseMeta outputDataBase = todb.getDatabase();
-		//Database db = new Database(inputDataBase);
-		Database db = new Database(null, inputDataBase);
-		db.connect();
-		String sql = "select * from V_USER_ROLE_EXPORT where  rownum=1";
-		db.openQuery(sql);
-		RowMetaInterface  idxRowMeta  = db.getReturnRowMeta();
-		String[] columns = idxRowMeta.getFieldNames();
-		int length = columns.length;
-		boolean isCheckPass = true;
+
+        System.out.println(inputDataBase.testConnection());
+        System.out.println(outputDataBase.testConnection());
+
 		
-		String filename = "exportNotime.ktr";
-		
-		if(length >= 3){
-			columnNames.put("LINK_INDATE","LINK_INDATE");
-			filename = "export.ktr";
-		}
-		if(length < 2){
-			System.out.println("È±ÉÙ×Ö¶Î");
-			isCheckPass = false;
-		}else{
-			for(String str:idxRowMeta.getFieldNames()){
-				String s = columnNames.get(str);
-				if(s == null || s.trim().equals("")){
-					System.out.println(str+"²»ÊÇÕıÈ·×Ö¶Î");
-					isCheckPass = false;
-				}
-			}	
-		}
-		if(isCheckPass){
-			//µÃµ½ĞèÒª¼ÓÔØµÄ×ª»»ÎÄ¼ş
+		String filename = "fullPump.ktr";
+
+			//å¾—åˆ°éœ€è¦åŠ è½½çš„è½¬æ¢æ–‡ä»¶
 			String path = "./lib/"+filename;
-			System.out.println("µ±Ç°ÎÄ¼şËùÔÚÂ·¾¶£º"+new File(path).getAbsolutePath());
+			System.out.println("å½“å‰æ–‡ä»¶æ‰€åœ¨è·¯å¾„ï¼š"+new File(path).getAbsolutePath());
 				
 			TransMeta tm = new TransMeta(path);
 			
-			// Ìæ»»ÊäÈëÊä³öÊı¾İ¿â
+			// æ›¿æ¢è¾“å…¥è¾“å‡ºæ•°æ®åº“
 			for(int i = 0;i < tm.getDatabases().size();i++){
 				String tableName = tm.getDatabase(i).getName();
-				if(tableName.equals("from")){
+				if(tableName.equals("client")){
 					tm.getDatabase(i).replaceMeta(inputDataBase);
-				}else if(tableName.equals("to")){
+				}else if(tableName.equals("server")){
 					tm.getDatabase(i).replaceMeta(outputDataBase);
 				}
 			}
 			
-			//µÃµ½×ª»»
+			//å¾—åˆ°è½¬æ¢
 			Trans trans = new Trans(tm);
-			//ÉèÖÃÃüÃû²ÎÊı
+			//è®¾ç½®å‘½åå‚æ•°
 			String appcode = fromdb.getAppcode();
 			trans.setVariable("APP_CODE", appcode);
-			//Ô¤Ö´ĞĞ£¬·ñ×ßÃ»·¨µÃµ½steps
+			//é¢„æ‰§è¡Œï¼Œå¦èµ°æ²¡æ³•å¾—åˆ°steps
 			trans.prepareExecution(null);
-			//Ã»Ê²Ã´ÓÃ°É¡£¡£¡£¡£¡£
+			//æ²¡ä»€ä¹ˆç”¨å§ã€‚ã€‚ã€‚ã€‚ã€‚
 			List<StepMetaDataCombi> steps = trans.getSteps();
 			for (StepMetaDataCombi s : steps) {
 				System.out.println(s.stepname);
 			}
-			// Æô¶¯²¢µÈ´ıÖ´ĞĞÍê³É
+			// å¯åŠ¨å¹¶ç­‰å¾…æ‰§è¡Œå®Œæˆ
 			trans.startThreads();
 			trans.waitUntilFinished();
-		}
 	}
 	
 	 /** 
-     * java µ÷ÓÃ kettle µÄjob 
+     * java è°ƒç”¨ kettle çš„job 
      *  
      * @param jobname 
-     *            Èç£º String fName= "D:\\kettle\\informix_to_am_4.ktr"; 
+     *            å¦‚ï¼š String fName= "D:\\kettle\\informix_to_am_4.ktr"; 
      */  
     public static void runJob(String[] params, String jobPath) {  
         try {  
         	
             KettleEnvironment.init();  
-            // jobname ÊÇJob½Å±¾µÄÂ·¾¶¼°Ãû³Æ  
+            // jobname æ˜¯Jobè„šæœ¬çš„è·¯å¾„åŠåç§°  
             JobMeta jobMeta = new JobMeta(jobPath, null); 
             Job job = new Job(null, jobMeta);  
-            // ÏòJob ½Å±¾´«µİ²ÎÊı£¬½Å±¾ÖĞ»ñÈ¡²ÎÊıÖµ£º${²ÎÊıÃû}  
+            // å‘Job è„šæœ¬ä¼ é€’å‚æ•°ï¼Œè„šæœ¬ä¸­è·å–å‚æ•°å€¼ï¼š${å‚æ•°å}  
             // job.setVariable(paraname, paravalue);  
             job.start();  
             job.waitUntilFinished();
             int errorNum = job.getErrors();
             System.out.println("errorNum=" + errorNum);
             if(errorNum <= 0){
-            	System.out.println("³É¹¦");
+            	System.out.println("æˆåŠŸ");
             	//runTrans(fromdb,todb);
             }else{
-            	System.out.println("Ğ£ÑéÃ»Í¨¹ı");
+            	System.out.println("æ ¡éªŒæ²¡é€šè¿‡");
             }
         } catch (Exception e) {
-        	System.out.println("ÊäÈëÊÓÍ¼×Ö¶Î²»ºÏ·¨£¡");
+        	System.out.println("è¾“å…¥è§†å›¾å­—æ®µä¸åˆæ³•ï¼");
           //  e.printStackTrace();  
         }  
     }  
